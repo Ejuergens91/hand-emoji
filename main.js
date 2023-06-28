@@ -5,7 +5,7 @@ $(function () {
 
     var model;
     var cameraMode = "environment"; // or "user"
-
+ 
     const startVideoStreamPromise = navigator.mediaDevices
         .getUserMedia({
             audio: false,
