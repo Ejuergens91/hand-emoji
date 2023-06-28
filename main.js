@@ -1,5 +1,5 @@
 /*jshint esversion:6*/
- 
+
 $(function () {
     const video = $("video")[0];
 
@@ -50,6 +50,8 @@ $(function () {
     var canvas, ctx;
     const font = "16px sans-serif";
 
+
+
     function videoDimensions(video) {
         // Ratio of the video's intrisic dimensions
         var videoRatio = video.videoWidth / video.videoHeight;
@@ -79,6 +81,25 @@ $(function () {
         resizeCanvas();
     });
 
+    let ball = document.getElementById("ball")
+    let point1 = document.getElementById("point1")
+    let live1 = document.getElementById("live1")
+    let punching = document.getElementById("punching1")
+    let raisedfist = document.getElementById("raisedfist")
+    let praying = document.getElementById("praying")
+    let rock = document.getElementById("rock")
+    let love = document.getElementById("love")
+    let raisedhand = document.getElementById("raisedhand")
+    let callme = document.getElementById("callme")
+    let crossed = document.getElementById("crossed")
+    let middle = document.getElementById("middle")
+    
+    let predictions = []
+    let position = {x: 10, y: 10}
+    let speed = {x: 1, y: 1}
+    
+    
+
     const resizeCanvas = function () {
         $("canvas").remove();
 
@@ -107,14 +128,32 @@ $(function () {
         });
 
         $("body").append(canvas);
+
+        // runAnimation()
     };
 
-    const renderPredictions = function (predictions) {
+    function renderPredictions (preds) {
+        predictions = preds
+        draw()
+    }
+
+    function runAnimation(){
+        position.x += speed.x
+        position.y += speed.y
+        draw()
+        setTimeout(runAnimation, 30)
+    }
+
+    function draw () {
         var dimensions = videoDimensions(video);
 
         var scale = 1;
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        // ctx.drawImage(ball, position.x, position.y, 100, 100)
+
+        // ctx.strokeRect(10,10, 100, 100)
 
         predictions.forEach(function (prediction) {
             const x = prediction.bbox.x;
@@ -135,6 +174,7 @@ $(function () {
 
             // Draw the label background.
             ctx.fillStyle = prediction.color;
+            console.log(prediction.class)
             const textWidth = ctx.measureText(prediction.class).width;
             const textHeight = parseInt(font, 10); // base 10
             ctx.fillRect(
@@ -143,6 +183,54 @@ $(function () {
                 textWidth + 8,
                 textHeight + 4
             );
+            if (prediction.class == "Okay") {
+                ctx.drawImage(ball, position.x, position.y, 100, 100)
+
+            }
+            if (prediction.class == "Pointing-Up") {
+                ctx.drawImage(point1, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Live-Long-Prosper") {
+                ctx.drawImage(live1, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Hand-Raised") {
+                ctx.drawImage(raisedhand, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Raised-Fist") {
+                ctx.drawImage(raisedfist, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Oncoming-Punch") {
+                ctx.drawImage(punching, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Praying-Hands") {
+                ctx.drawImage(praying, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Middle") {
+                ctx.drawImage(middle, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Call-me") {
+                ctx.drawImage(callme, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Fingers-Crossed") {
+                ctx.drawImage(crossed, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Rock") {
+                ctx.drawImage(rock, position.x, position.y, 100, 100)
+            }
+
+            if (prediction.class == "Love-You") {
+                ctx.drawImage(love, position.x, position.y, 100, 100)
+            }
+
         });
 
         predictions.forEach(function (prediction) {
@@ -163,7 +251,7 @@ $(function () {
             );
         });
     };
-
+ 
     var prevTime;
     var pastFrameTimes = [];
     const detectFrame = function () {
